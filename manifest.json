@@ -1,25 +1,30 @@
 {
   "manifest_version": 3,
-  "name": "Fast Health",
+  "name": "Open AI In Da Browser",
   "version": "0.1.0",
   "version_name": "0.1.0",
-  "description": "Fast Health",
+  "description": "Open AI",
   "author": "Sterling Kooshesh",
   "icons": {
-
   },
   "permissions": [
     "tabs",
     "bookmarks",
-    "unlimitedStorage","geolocation","webNavigation","scripting"
+    "storage",
+    "unlimitedStorage",
+    "geolocation",
+    "webNavigation",
+    "scripting",
+    "contextMenus"
   ],
-  "host_permissions": ["*://*/*"],
+  "host_permissions": [
+    "*://*/*"
+  ],
   "background": {
-
     "service_worker": "public/helper.js"
   },
   "action": {
     "default_popup": "dist/index.html",
-    "default_title": "Fast Survey"
+    "default_title": "Open AI In Da Browser"
   }
 }
