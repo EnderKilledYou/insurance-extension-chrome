@@ -2,31 +2,37 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
-import {ref} from "vue";
-import {Configuration, OpenAIApi} from "openai";
+import { ref } from "vue";
+import { Configuration, OpenAIApi } from "openai";
 
 const prompt_text = ref("")
 let response_text = ref("")
-//@ts-ignore
+let error_text = ref("")
 const storage_key = await chrome.storage.local.get(["key"])
-const key_text = ref(storage_key.key)
 const configuration = new Configuration({
   apiKey: storage_key.key,
 });
 const openai = new OpenAIApi(configuration);
-
-async function OpenaiFetchAPI() {
+async function OpenaiFetchAPI(): Promise<string | null> {
   console.log("Calling GPT3")
-  const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: prompt_text.value,
-      }
-  );
-  return completion.data.choices[0].text;
+  try {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt_text.value,
+    });
+
+    return completion.data.choices[0].text ?? null;
+  } catch (e: any) {
+    error_text.value = "Request failed! " + e.message
+    return null;
+  }
 }
 
 async function AskOpen() {
-  response_text.value = await OpenaiFetchAPI()
+  const result = await OpenaiFetchAPI()
+  if (result) {
+    response_text.value = result;
+  }
 }
 </script>
 
@@ -41,13 +47,13 @@ async function AskOpen() {
 
           </label>
           <textarea v-model="prompt_text"
-                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                    id="grid-first-name" type="text" placeholder=""></textarea>
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+            id="grid-first-name" type="text" placeholder=""></textarea>
           <p class="text-red-500 text-xs italic">Please fill out this field.</p>
         </div>
         <div class="md:flex md:items-center">
           <button @click="AskOpen"
-                  class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+            class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
             Ask
           </button>
         </div>
@@ -58,14 +64,13 @@ async function AskOpen() {
             Response
           </label>
           <textarea rows="10" v-model="response_text"
-                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                    id="grid-first-name" type="text" placeholder=""></textarea>
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+            id="grid-first-name" type="text" placeholder=""></textarea>
 
         </div>
 
       </div>
     </form>
   </div>
-
 </template>
 

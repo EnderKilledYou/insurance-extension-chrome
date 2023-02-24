@@ -3,10 +3,10 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
 import {ref, watch} from "vue";
-import {TalkToBack} from "../TalkToBack";
+
 import ExtensionFooter from "./ExtensionFooter.vue";
 
-//@ts-ignore
+
 const storage_key = await chrome.storage.local.get(["key"])
 
 const key_text = ref(storage_key.key)
@@ -14,7 +14,7 @@ const key_text = ref(storage_key.key)
 async function SetKey() {
   const data = {key: key_text.value};
   console.log(data);
-  //@ts-ignore
+
   await chrome.storage.local.set(data)
 }
 </script>

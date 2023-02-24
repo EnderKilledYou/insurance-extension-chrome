@@ -2,10 +2,10 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import AskForm from "./components/AskForm.vue";
 import KeyForm from "./components/KeyForm.vue";
-import {TalkToBack} from "./TalkToBack";
+
 
 const prompt_text = ref("")
 let response_text = ref("")
@@ -17,16 +17,16 @@ function want_settings_click() {
   want_settings.value = !want_settings.value
 }
 
-//@ts-ignore
+
 chrome.storage.local.get(["key"]).then((result) => {
 
   has_key.value = result.key;
 });
 
 
-//@ts-ignore
+
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  //@ts-ignore
+
   for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
     if (key === 'key') {
 

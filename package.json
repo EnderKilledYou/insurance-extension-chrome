@@ -9,12 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/chrome": "^0.0.217",
+    "openai": "^3.1.0",
     "postcss-import": "^15.0.0",
     "vite-plugin-pages": "^0.26.0",
     "vite-plugin-vue-layouts": "^0.7.0",
     "vue": "^3.2.37",
-    "vue-router": "^4.1.5",
-    "openai": "^3.1.0"
+    "vue-router": "^4.1.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.1.0",
