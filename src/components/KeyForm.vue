@@ -6,24 +6,16 @@ import {ref, watch} from "vue";
 import {TalkToBack} from "../TalkToBack";
 import ExtensionFooter from "./ExtensionFooter.vue";
 
-let key_text = ref("")
-
-
 //@ts-ignore
-chrome.storage.local.get(["key"]).then((result) => {
-  console.log(result)
-  if (result.key) {
-    key_text.value = result.key
-  }
-});
+const storage_key = await chrome.storage.local.get(["key"])
+
+const key_text = ref(storage_key.key)
 
 async function SetKey() {
   const data = {key: key_text.value};
   console.log(data);
   //@ts-ignore
-  chrome.storage.local.set(data).then(() => {
-
-  });
+  await chrome.storage.local.set(data)
 }
 </script>
 

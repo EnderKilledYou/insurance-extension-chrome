@@ -3,57 +3,29 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
 import {ref} from "vue";
+import {Configuration, OpenAIApi} from "openai";
 
 const prompt_text = ref("")
-const key_text = ref("")
 let response_text = ref("")
 //@ts-ignore
-chrome.storage.local.get(["key"]).then((result) => {
-  console.log(result)
-  if (result.key) {
-    key_text.value = result.key
-  }
+const storage_key = await chrome.storage.local.get(["key"])
+const key_text = ref(storage_key.key)
+const configuration = new Configuration({
+  apiKey: storage_key.key,
 });
+const openai = new OpenAIApi(configuration);
 
 async function OpenaiFetchAPI() {
   console.log("Calling GPT3")
-  const url = "https://api.openai.com/v1/engines/davinci/completions";
-  const bearer = 'Bearer ' + key_text.value
-  const data = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': bearer,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      "prompt": prompt_text.value,
-      // "max_tokens": 5,
-      // "temperature": 1,
-      // "top_p": 1,
-      // "n": 1,
-      // "stream": false,
-      // "logprobs": null,
-      // "stop": "\n"
-    })
-
-
-  }).then(response => {
-
-    return response.json()
-
-  })
-
-
-  console.log(data)
-  console.log(typeof data)
-  console.log(Object.keys(data))
-  console.log(data['choices'][0].text)
-  return data['choices'][0].text;
-
+  const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt_text.value,
+      }
+  );
+  return completion.data.choices[0].text;
 }
 
 async function AskOpen() {
-
   response_text.value = await OpenaiFetchAPI()
 }
 </script>
